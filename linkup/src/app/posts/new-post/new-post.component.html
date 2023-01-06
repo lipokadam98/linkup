@@ -1,0 +1,6 @@
+
+<form [formGroup]="newPostForm" (ngSubmit)="onNewPost()" class="bg-slate-400 border-2 p-5 sticky top-14  rounded-lg shadow-xl flex justify-between gap-5">
+      <input class="p-2 flex-1 rounded-full" formControlName="message" placeholder="Mi jár a fejedben...">
+      <button [disabled]="!newPostForm.valid" class="bg-sky-600" mat-raised-button type="submit">Mentés</button>
+</form>
+
