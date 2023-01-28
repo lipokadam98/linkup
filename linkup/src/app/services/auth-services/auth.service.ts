@@ -34,7 +34,7 @@ export class AuthService implements OnInit{
   }
 
   signUp(email: string, password: string, displayName: string){
-    return this.httpClient.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + environment.firebaseAPIKey,{
+    return this.httpClient.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + environment.firebase.apiKey,{
       email: email,
       password: password,
       displayName: displayName,
@@ -46,7 +46,7 @@ export class AuthService implements OnInit{
   }
 
   signIn(email: string, password: string){
-    return this.httpClient.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key='  + environment.firebaseAPIKey,{
+    return this.httpClient.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key='  + environment.firebase.apiKey,{
       email: email,
       password: password,
       returnSecureToken: true
