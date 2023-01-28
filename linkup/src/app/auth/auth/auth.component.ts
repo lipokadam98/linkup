@@ -1,7 +1,7 @@
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { RegistrationComponent } from './../registration/registration.component';
-import { AuthService, AuthResponseData } from './../../services/auth.service';
+import { AuthService, AuthResponseData } from '../../services/auth-services/auth.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';

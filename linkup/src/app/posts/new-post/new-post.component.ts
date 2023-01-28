@@ -1,9 +1,6 @@
-import { PostDataStorageService } from '../../shared/post-data-storage.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { PostService } from './../../services/post.service';
 import { Component, OnInit} from '@angular/core';
-import { interval } from 'rxjs';
-import { Post } from '../model/post.model';
+import { PostDataStorageService } from 'src/app/services/post-services/post-data-storage.service';
 
 @Component({
   selector: 'app-new-post',
@@ -14,8 +11,7 @@ export class NewPostComponent implements OnInit{
 
   newPostForm: FormGroup = new FormGroup({});
 
-  constructor(private postsService: PostService,
-              private postDataStorageService: PostDataStorageService) { }
+  constructor(private postDataStorageService: PostDataStorageService) { }
 
   ngOnInit(): void {
 

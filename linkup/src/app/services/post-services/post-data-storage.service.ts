@@ -1,10 +1,10 @@
-import { AuthService } from './../services/auth.service';
-import { PostService } from '../services/post.service';
+import { PostService } from './post.service';
 import { Injectable } from '@angular/core';
 import { Observable, take, map } from 'rxjs';
-import { Post } from '../posts/model/post.model';
 import { CollectionReference, DocumentData, Firestore, collectionData, deleteDoc, doc, getDoc, collectionChanges } from '@angular/fire/firestore';
 import { addDoc, collection } from '@firebase/firestore';
+import { AuthService } from '../auth-services/auth.service';
+import { Post } from 'src/app/posts/model/post.model';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +21,6 @@ export class PostDataStorageService {
     }
 
   getAllPosts(){
-
     collectionChanges(this.postsCollection).subscribe(()=>{
       const posts = collectionData(this.postsCollection, {
         idField: 'id',
@@ -39,7 +38,7 @@ export class PostDataStorageService {
   }
 
   createPost(message: string){
-    addDoc(this.postsCollection,JSON.parse(JSON.stringify(new Post(message,new Date(),this.authService.user.value?.id))));
+    addDoc(this.postsCollection,JSON.parse(JSON.stringify(new Post(message,new Date(),this.authService.user.value?.userId))));
   }
 
   deletePost(id: string | undefined){

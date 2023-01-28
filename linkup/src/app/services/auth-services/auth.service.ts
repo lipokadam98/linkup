@@ -4,7 +4,7 @@ import { BehaviorSubject, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
-import { User } from '../shared/models/user.model';
+import { User } from '../../shared/models/user.model';
 
 export interface AuthResponseData{
   idToken: string,
@@ -70,7 +70,7 @@ export class AuthService implements OnInit{
       return;
     }
 
-    const loadedUser = new User(userData.email,userData.id,userData._token,new Date(userData._tokenExpirationDate),userData.displayName);
+    const loadedUser = new User(userData.email,userData.id,userData.displayName,userData._token,new Date(userData._tokenExpirationDate));
 
     if(loadedUser.token){
       this.user.next(loadedUser);
@@ -99,9 +99,9 @@ export class AuthService implements OnInit{
     },expirationDuration);
   }
 
-  private handleAuthentication(email: string,userId: string, token: string, expiresIn: number,displayName?:string){
+  private handleAuthentication(email: string,userId: string, token: string, expiresIn: number,displayName:string){
     const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
-    const user = new User(email,userId,token,expirationDate,displayName);
+    const user = new User(email,userId,displayName,token,expirationDate);
     this.user.next(user);
     this.autoLogout(expiresIn * 1000);
     this.router.navigate(['']);

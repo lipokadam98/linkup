@@ -1,6 +1,7 @@
+import { UserDataStorageService } from '../../services/user-services/user-data-storage.service';
 import { Subscription } from 'rxjs';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { AuthService } from './../../services/auth.service';
+import { AuthService } from '../../services/auth-services/auth.service';
 import { Component, OnInit,OnDestroy } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
@@ -13,7 +14,9 @@ import Swal from 'sweetalert2';
 export class RegistrationComponent implements OnInit, OnDestroy {
   signUpFormGroup: FormGroup  = new FormGroup({});
   signUpSub = new Subscription();
-  constructor(private dialogRef: MatDialogRef<RegistrationComponent>,private authService: AuthService) { }
+  constructor(private dialogRef: MatDialogRef<RegistrationComponent>,
+              private authService: AuthService,
+              private userDataStorageService: UserDataStorageService) { }
 
   ngOnInit(): void {
     this.signUpFormGroup = new FormGroup({
@@ -46,8 +49,10 @@ export class RegistrationComponent implements OnInit, OnDestroy {
     const displayName = surname + ' '+ givenName;
 
     this.signUpSub = this.authService.signUp(email,password,displayName).subscribe({
-      next: ()=>{
-        this.dialogRef.close();
+      next: (data)=>{
+        this.userDataStorageService.createUser(data).then(()=>{
+          this.dialogRef.close();
+        });
       },
       error: (data)=>{
         this.handleSignUpError(data);

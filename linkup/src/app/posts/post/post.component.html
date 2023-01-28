@@ -1,12 +1,21 @@
-<section class="text-cyan-50 container bg-slate-100 bg-opacity-20 shadow-sm p-5 mt-2 rounded-lg">
+<section
+  class="text-cyan-50 container bg-slate-100 bg-opacity-20 shadow-sm p-5 mt-2 rounded-lg"
+>
   <div class="flex flex-row justify-between items-center">
-    <span>{{post?.id}}</span>
-    <button *ngIf="canDelete" (click)="removePost()"  matTooltip="Post törlése" matTooltipPosition="above"><mat-icon>remove</mat-icon></button>
+    <span>{{ post?.id }}</span>
+    <button
+      *ngIf="canDelete"
+      (click)="removePost()"
+      matTooltip="Post törlése"
+      matTooltipPosition="above"
+    >
+      <mat-icon>remove</mat-icon>
+    </button>
   </div>
 
-<p class="break-words">{{post?.message}}</p>
-<img>
-<div class="flex flex-row justify-end">
-  {{post?.creationDate  | date:'YYYY-MM-dd HH:mm'}}
-</div>
+  <p class="break-words">{{ post?.message }}</p>
+  <img />
+  <div class="flex flex-row justify-end">
+    {{ post?.creationDate | date : "YYYY-MM-dd HH:mm" }}
+  </div>
 </section>

@@ -1,7 +1,7 @@
 import { User } from './../shared/models/user.model';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../services/auth-services/auth.service';
 import { Component, OnInit } from '@angular/core';
 
 

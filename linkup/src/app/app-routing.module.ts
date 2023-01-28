@@ -1,3 +1,4 @@
+import { UsersComponent } from './users/users.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { AuthGuard } from './auth/auth.guard';
 import { AuthComponent } from './auth/auth/auth.component';
@@ -9,6 +10,7 @@ import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {path: '', canActivate: [AuthGuard], component: WelcomeComponent},
   {path: 'login', component: AuthComponent},
+  {path: 'users', component: UsersComponent},
   {path: 'newpost', canActivate: [AuthGuard], component: NewPostComponent},
   {path: '**', canActivate: [AuthGuard], component: NotFoundComponent}
 ];
