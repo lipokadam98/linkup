@@ -59,7 +59,7 @@ export class AuthService implements OnInit{
   autoLogin(){
    const userData: {
     email: string,
-    id: string,
+    userId: string,
     displayName: string,
     _token: string,
     _tokenExpirationDate: string
@@ -70,7 +70,7 @@ export class AuthService implements OnInit{
       return;
     }
 
-    const loadedUser = new User(userData.email,userData.id,userData.displayName,userData._token,new Date(userData._tokenExpirationDate));
+    const loadedUser = new User(userData.email,userData.userId,userData.displayName,userData._token,new Date(userData._tokenExpirationDate));
 
     if(loadedUser.token){
       this.user.next(loadedUser);

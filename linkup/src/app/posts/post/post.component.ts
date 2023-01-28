@@ -1,8 +1,8 @@
 import { User } from './../../shared/models/user.model';
-import { AuthService } from '../../services/auth-services/auth.service';
 import { Post } from '../model/post.model';
 import { Component, Input, OnInit } from '@angular/core';
 import { PostDataStorageService } from 'src/app/services/post-services/post-data-storage.service';
+import { AuthService } from 'src/app/services/auth-services/auth.service';
 
 @Component({
   selector: 'app-post',
@@ -15,22 +15,30 @@ export class PostComponent implements OnInit {
   post: Post | undefined;
 
   canDelete = false;
-  user: User | undefined;
+
+  user: User | null | undefined;
 
   constructor(private authService: AuthService,
-              private postDataStorageService: PostDataStorageService,
-              ) {
+              private postDataStorageService: PostDataStorageService) {
 
   }
 
   ngOnInit(): void {
-    this.canDelete = this.authService.user.value?.userId === this.post?.userId;
+    this.user = this.authService.user.value;
+    this.canDelete = this.user?.userId === this.post?.userId;
   }
 
   removePost(){
     this.postDataStorageService.deletePost(this.post?.id);
   }
 
+  getUserName(){
+    if(this.post?.userId === this.user?.userId){
+      return this.user?.displayName;
+    }
+
+    return "Anonymus";
+  }
 
 
 }

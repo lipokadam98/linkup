@@ -29,7 +29,7 @@ export class PostDataStorageService {
       posts.pipe(take(1)).pipe(map((posts: Post[])=>{
         return posts.sort((a: Post, b: Post) => {
           return new Date(a.creationDate).getTime() - new Date(b.creationDate).getTime();
-      });
+        });
 
       })).subscribe(data=>{
         this.postsService.addPosts(data);

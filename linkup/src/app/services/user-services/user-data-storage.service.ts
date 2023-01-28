@@ -14,13 +14,11 @@ export class UserDataStorageService {
     this.usersCollection = collection(this.firestore,'users');
   }
 
-   async getAllUsers(){
-
-    const q = query(this.usersCollection, where("userId", "==", "gDgJSdU2EsUaovu72pkgm8tARpC2"),limit(1));
-
+   async getUserById(userId: string){
+    const q = query(this.usersCollection, where("userId", "==", userId));
     const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
-        return doc.data() as User;
+          return doc.data() as User;
     });
   }
 
