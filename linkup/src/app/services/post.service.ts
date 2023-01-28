@@ -1,7 +1,5 @@
-import { Post } from './../posts/post/post.model';
-import { HttpClient } from '@angular/common/http';
-import { Injectable, OnInit } from '@angular/core';
-import { map } from 'rxjs';
+import { Post } from '../posts/model/post.model';
+import { Injectable} from '@angular/core';
 import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 
 @Injectable({
@@ -9,34 +7,36 @@ import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 })
 export class PostService{
 
-  posts: Post[] = [];
+  private posts: Post[] = [];
   postSubject = new BehaviorSubject<Post[]>([]);
 
-  constructor(private httpClient: HttpClient) { }
+  constructor() { }
 
+  getPost(index: number){
+    return this.posts[index];
+  }
 
   getPosts(){
-   return this.httpClient.get<{[key: string]: Post}>("https://linkup-8c013-default-rtdb.europe-west1.firebasedatabase.app/posts.json?print=pretty").pipe(map(responseData => {
-     const postsArray = [];
-     for(const key in responseData){
-      if(responseData.hasOwnProperty(key)){
-        postsArray.push({...responseData[key], id: key});
-      }
-     }
-
-     return postsArray as Post[];
-    })).subscribe(data=>{
-      this.posts = data;
-      this.postSubject.next(this.posts);
-    });
+    this.postSubject.next(this.posts.slice());
   }
 
-  savePost(message: string,userName?: string){
-    this.httpClient.post("https://linkup-8c013-default-rtdb.europe-west1.firebasedatabase.app/posts.json",{
-      message: message
-    }).subscribe( ()=>{
-      this.getPosts();
+  addPost(post: Post){
+    this.posts.push(post);
+    this.postSubject.next(this.posts.slice());
+  }
+
+  addPosts(posts: Post[]){
+    this.posts = [];
+    this.posts.push(...posts);
+    this.postSubject.next(this.posts.slice());
+  }
+
+  deletePost(id: string | undefined){
+    const foundPost = this.posts.find( (post: Post)=> post.id === id);
+    if(foundPost){
+      this.posts.splice(this.posts.indexOf(foundPost),1);
     }
-    );
+    this.postSubject.next(this.posts);
   }
+
 }

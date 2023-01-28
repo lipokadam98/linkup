@@ -1,8 +1,49 @@
 /* You can add global styles to this file, and also import other style files */
+
 @tailwind base
 @tailwind components
 @tailwind utilities
 
+@import '@sweetalert2/theme-dark/dark.scss'
+
+$body-color: #233753ee
+$input-border-color: #002fff
+$error-color: #fa2c2c
+
 body
   padding-top: 60px
-  background-color: #233753ee
+  background-color: $body-color
+
+.dialog-style
+  .mat-dialog-container
+    --tw-bg-opacity: 1
+    background-color: rgb(148 163 184 / var(--tw-bg-opacity))
+    border-width: 2px
+    border-color: rgb(248 250 252 / var(--tw-border-opacity))
+
+.shadow-input
+  padding: 5px
+  margin: 2px
+  outline: none
+  color: black
+  transition: box-shadow 250ms, outline 250ms
+
+
+.shadow-input:focus-within
+  outline: 1px solid $input-border-color
+
+.shadow-input:hover
+  box-shadow: 0 0 15px gray
+
+::ng-deep .mat-form-field-wrapper
+  margin: 0 !important
+  padding: 0  !important
+
+
+/*.mat-error
+  color: white
+  padding: 2px
+  background-color: $error-color
+  border-radius: 5px
+  margin-top: 5px
+  box-shadow: 0 0 5px $error-color*/
