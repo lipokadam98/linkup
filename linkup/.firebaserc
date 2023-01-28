@@ -1,5 +1,14 @@
 {
   "projects": {
     "default": "linkup-8c013"
+  },
+  "targets": {
+    "linkup-8c013": {
+      "hosting": {
+        "linkup": [
+          "linkup-8c013"
+        ]
+      }
+    }
   }
 }
