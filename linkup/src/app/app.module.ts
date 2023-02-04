@@ -17,6 +17,8 @@ import { provideMessaging,getMessaging } from '@angular/fire/messaging';
 import { provideStorage,getStorage } from '@angular/fire/storage';
 import { PostsModule } from './posts/posts.module';
 import { NavbarModule } from './navbar/navbar.module';
+import {StoreModule} from "@ngrx/store";
+import {userReducer} from "./state/users/user.reducer";
 
 @NgModule({
   declarations: [
@@ -33,6 +35,7 @@ import { NavbarModule } from './navbar/navbar.module';
     FriendsModule,
     UsersModule,
     PostsModule,
+    StoreModule.forRoot({users: userReducer}),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
