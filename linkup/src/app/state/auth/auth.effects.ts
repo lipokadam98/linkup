@@ -18,6 +18,7 @@ export class AuthEffects{
               private authService: AuthService) {
   }
 
+  //Ezt is érdemes megfontolni hogy egyik effect hívhat e más statehez tartozó actiont mivel így a másik actionhöz tartozó error kezelése nehézkes
   signUp$ = createEffect(()=>
       this.actions$.pipe(
         ofType(signUp),
