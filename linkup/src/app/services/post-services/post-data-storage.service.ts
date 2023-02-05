@@ -1,21 +1,30 @@
-import { PostService } from './post.service';
-import { Injectable } from '@angular/core';
-import { Observable, take, map } from 'rxjs';
-import { CollectionReference, DocumentData, Firestore, collectionData, deleteDoc, doc, getDoc, collectionChanges } from '@angular/fire/firestore';
-import { addDoc, collection } from '@firebase/firestore';
-import { AuthService } from '../auth-services/auth.service';
-import { Post } from 'src/app/posts/model/post.model';
+import {PostService} from './post.service';
+import {Injectable} from '@angular/core';
+import {map, Observable, take} from 'rxjs';
+import {
+  collectionChanges,
+  collectionData,
+  CollectionReference,
+  deleteDoc,
+  doc,
+  Firestore
+} from '@angular/fire/firestore';
+import {addDoc, collection} from '@firebase/firestore';
+import {Post} from 'src/app/posts/model/post.model';
+import {Store} from "@ngrx/store";
+import {AppState} from "../../state/app.state";
+import {selectAuthUser} from "../../state/auth/auth.selectors";
 
 @Injectable({
   providedIn: 'root'
 })
 export class PostDataStorageService {
 
-  private postsCollection : CollectionReference<DocumentData>;
+  private readonly postsCollection : CollectionReference;
 
   constructor(
     private postsService: PostService,
-    private authService: AuthService,
+    private store: Store<AppState>,
     private readonly firestore: Firestore) {
       this.postsCollection = collection(this.firestore,'posts');
     }
@@ -38,7 +47,11 @@ export class PostDataStorageService {
   }
 
   createPost(message: string){
-    addDoc(this.postsCollection,JSON.parse(JSON.stringify(new Post(message,new Date(),this.authService.user.value?.userId))));
+    this.store.select(selectAuthUser).pipe(take(1)).subscribe( user =>{
+      if(user){
+        addDoc(this.postsCollection,JSON.parse(JSON.stringify(new Post(message,new Date(),user.userId)))).then();
+      }
+    });
   }
 
   deletePost(id: string | undefined){
@@ -47,30 +60,4 @@ export class PostDataStorageService {
       this.postsService.deletePost(id);
     });
   }
-
- /* getPosts(){
-    return this.httpClient.get<{[key: string]: Post}>("https://linkup-8c013-default-rtdb.europe-west1.firebasedatabase.app/posts.json?print=pretty").pipe(map(responseData => {
-      const postsArray = [];
-      for(const key in responseData){
-       if(responseData.hasOwnProperty(key)){
-         postsArray.push({...responseData[key], id: key});
-       }
-      }
-
-      return postsArray as Post[];
-     })).subscribe(data=>{
-        this.postsService.addPosts(data);
-     });
-   }
-
-   savePost(message: string){
-     this.httpClient.post("https://linkup-8c013-default-rtdb.europe-west1.firebasedatabase.app/posts.json",{
-       message: message,
-       userName: this.authService.user.value?.displayName,
-       userId: this.authService.user.value?.id
-     }).subscribe( ()=>{
-       this.getPosts();
-     }
-     );
-   }*/
 }

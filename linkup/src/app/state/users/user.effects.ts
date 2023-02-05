@@ -1,7 +1,12 @@
 import {Injectable} from "@angular/core";
 import {Store} from "@ngrx/store";
 import {AppState} from "../app.state";
-import {UserService} from "../../services/user-services/user.service";
+import {Actions, createEffect, ofType} from "@ngrx/effects";
+import {addUser, loadUsers, loadUsersFailure, loadUsersSuccess} from "./user.actions";
+import {from, map, of, switchMap, withLatestFrom} from "rxjs";
+import {UserDataStorageService} from "../../services/user-services/user-data-storage.service";
+import {catchError} from "rxjs/operators";
+import {getNewUserData} from "./user.selectors";
 
 /**Effects are listening to actions being dispatched and can make async calls towards backend services.
  *They way we can react to actions is because we need to inject the Actions into our constructor,
@@ -11,10 +16,32 @@ import {UserService} from "../../services/user-services/user.service";
 export class UserEffects{
 
   constructor(
-              private _store: Store<AppState>,
-              private _userService: UserService) {
+              private actions$: Actions,
+              private store: Store<AppState>,
+              private userDataStorageService: UserDataStorageService) {
   }
 
+  loadUsers$ = createEffect(()=>
+    this.actions$.pipe(
+      ofType(loadUsers),
+      switchMap(()=>
+        from(this.userDataStorageService.getAllUsers()).pipe(
+          map((users) => loadUsersSuccess({users: users})),
+          catchError((error)=> of(loadUsersFailure({error})))
+        )
+      )
+    )
+  );
+
+  saveUser$ = createEffect(()=>
+  this.actions$.pipe(
+    ofType(addUser),
+    withLatestFrom(this.store.select(getNewUserData)),
+    switchMap(([action])=> from(this.userDataStorageService.createUser(action.user))
+    )
+  ),
+    {dispatch: false}
+  )
 }
 
 

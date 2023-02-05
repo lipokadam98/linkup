@@ -1,10 +1,13 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Injectable, OnInit } from '@angular/core';
-import { BehaviorSubject, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
-import { Router } from '@angular/router';
-import { environment } from 'src/environments/environment';
-import { User } from '../../shared/models/user.model';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {throwError} from 'rxjs';
+import {catchError, tap} from 'rxjs/operators';
+import {Router} from '@angular/router';
+import {environment} from 'src/environments/environment';
+import {User} from '../../shared/models/user.model';
+import {Store} from "@ngrx/store";
+import {AppState} from "../../state/app.state";
+import {authSuccess, logout} from "../../state/auth/auth.actions";
 
 export interface AuthResponseData{
   idToken: string,
@@ -19,19 +22,16 @@ export interface AuthResponseData{
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService implements OnInit{
-
-  user = new BehaviorSubject<User | null>(null);
+export class AuthService{
 
   private tokenExpirationTimer: any;
 
-  constructor(private httpClient: HttpClient,private router: Router) {
+  constructor(private httpClient: HttpClient,
+              private router: Router,
+              private store: Store<AppState>) {
 
   }
 
-  ngOnInit(): void {
-    this.autoLogin();
-  }
 
   signUp(email: string, password: string, displayName: string){
     return this.httpClient.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + environment.firebase.apiKey,{
@@ -41,7 +41,7 @@ export class AuthService implements OnInit{
       returnSecureToken: true
     }).pipe(catchError(this.handleError),tap(resData=>{
       //Itt a lejárati dátumot állítjuk be a responseDataban megkapott expiresIn értéket alapul véve majd pedig 1000-el megszorozva
-      this.handleAuthentication(resData.email,resData.localId,resData.idToken,+resData.expiresIn,resData.displayName);
+     this.handleAuthentication(resData.email,resData.localId,resData.idToken,+resData.expiresIn,resData.displayName);
     }))
   }
 
@@ -52,7 +52,7 @@ export class AuthService implements OnInit{
       returnSecureToken: true
     }).pipe(catchError(this.handleError),tap(resData=>{
       //Itt a lejárati dátumot állítjuk be a responseDataban megkapott expiresIn értéket alapul véve majd pedig 1000-el megszorozva
-      this.handleAuthentication(resData.email,resData.localId,resData.idToken,+resData.expiresIn,resData.displayName);
+      return this.handleAuthentication(resData.email,resData.localId,resData.idToken,+resData.expiresIn,resData.displayName);
     }))
   }
 
@@ -73,7 +73,7 @@ export class AuthService implements OnInit{
     const loadedUser = new User(userData.email,userData.userId,userData.displayName,userData._token,new Date(userData._tokenExpirationDate));
 
     if(loadedUser.token){
-      this.user.next(loadedUser);
+      this.store.dispatch(authSuccess({user: loadedUser}));
       const expirationDuration = new Date(userData._tokenExpirationDate).getTime() - new Date().getTime();
       this.autoLogout(expirationDuration);
     }
@@ -82,9 +82,9 @@ export class AuthService implements OnInit{
   }
 
   logout(){
-    this.user.next(null);
+    this.store.dispatch(logout());
     sessionStorage.removeItem('userData');
-    this.router.navigate(['login']);
+    this.router.navigate(['login']).then();
 
     if(this.tokenExpirationTimer){
       clearTimeout(this.tokenExpirationTimer);
@@ -102,16 +102,16 @@ export class AuthService implements OnInit{
   private handleAuthentication(email: string,userId: string, token: string, expiresIn: number,displayName:string){
     const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
     const user = new User(email,userId,displayName,token,expirationDate);
-    this.user.next(user);
+    this.store.dispatch(authSuccess({user: user}));
     this.autoLogout(expiresIn * 1000);
-    this.router.navigate(['']);
+    this.router.navigate(['']).then();
     sessionStorage.setItem('userData',JSON.stringify(user));
   }
 
   private handleError(errorRes: HttpErrorResponse){
     let errorMessage = 'An unknown error occured'
     if(!errorRes.error || !errorRes.error.error){
-      return throwError(errorMessage);
+      return throwError(()=> new Error(errorMessage));
     }
 
     switch(errorRes.error.error.message){
@@ -129,6 +129,6 @@ export class AuthService implements OnInit{
         break;
     }
 
-    return throwError(errorMessage);
+    return throwError(()=> new Error(errorMessage));
   }
 }

@@ -1,11 +1,14 @@
-import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { RegistrationComponent } from './../registration/registration.component';
-import { AuthService, AuthResponseData } from '../../services/auth-services/auth.service';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import {Router} from '@angular/router';
+import {Subscription, take} from 'rxjs';
+import {RegistrationComponent} from '../registration/registration.component';
+import {AuthService} from '../../services/auth-services/auth.service';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
 import Swal from 'sweetalert2';
+import {Store} from "@ngrx/store";
+import {AppState} from "../../state/app.state";
+import {selectAuthUser} from "../../state/auth/auth.selectors";
 
 @Component({
   selector: 'app-auth',
@@ -16,7 +19,10 @@ export class AuthComponent implements OnInit, OnDestroy {
   authFormGroup: FormGroup = new FormGroup({});
   authSub = new Subscription();
 
-  constructor(private authService: AuthService,private matDialog: MatDialog, private router: Router) { }
+  constructor(private authService: AuthService,
+              private matDialog: MatDialog,
+              private router: Router,
+              private store: Store<AppState>) { }
 
   ngOnInit(): void {
     this.authFormGroup = new FormGroup({
@@ -24,9 +30,11 @@ export class AuthComponent implements OnInit, OnDestroy {
       'password': new FormControl(null,[Validators.required,Validators.minLength(6)])
     });
 
-    if(this.authService.user.value){
-      this.router.navigate(['']);
-    }
+    this.store.select(selectAuthUser).pipe(take(1)).subscribe(user=>{
+      if(user){
+        this.router.navigate(['']);
+      }
+    });
   }
 
   ngOnDestroy(): void {

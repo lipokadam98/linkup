@@ -1,14 +1,23 @@
-import { AuthResponseData } from '../auth-services/auth.service';
-import { Injectable } from '@angular/core';
-import { CollectionReference, DocumentData, Firestore, addDoc, collection, getDocs, limit, query, startAt, where} from '@angular/fire/firestore';
-import { User } from '../../shared/models/user.model';
+import {Injectable} from '@angular/core';
+import {
+  addDoc,
+  collection,
+  collectionData,
+  CollectionReference,
+  Firestore,
+  getDocs,
+  query,
+  where
+} from '@angular/fire/firestore';
+import {User} from '../../shared/models/user.model';
+import {Observable} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserDataStorageService {
 
-  private usersCollection : CollectionReference<DocumentData>;
+  private readonly usersCollection : CollectionReference;
 
   constructor(private readonly firestore: Firestore) {
     this.usersCollection = collection(this.firestore,'users');
@@ -22,7 +31,14 @@ export class UserDataStorageService {
     });
   }
 
-  createUser(data: AuthResponseData){
-    return addDoc(this.usersCollection,JSON.parse(JSON.stringify(new User(data.email,data.localId,data.displayName,null,null,new Date()))));
+  getAllUsers(){
+    console.log("all user data");
+    return collectionData(this.usersCollection, {
+      idField: 'id',
+    }) as Observable<User[]>;
+  }
+
+  createUser(user: User){
+    return addDoc(this.usersCollection,JSON.parse(JSON.stringify(user)));
   }
 }

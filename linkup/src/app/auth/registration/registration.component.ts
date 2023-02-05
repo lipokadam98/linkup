@@ -1,10 +1,12 @@
-import { UserDataStorageService } from '../../services/user-services/user-data-storage.service';
-import { Subscription } from 'rxjs';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { AuthService } from '../../services/auth-services/auth.service';
-import { Component, OnInit,OnDestroy } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import {Subscription} from 'rxjs';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {MatDialogRef} from '@angular/material/dialog';
 import Swal from 'sweetalert2';
+import {Store} from "@ngrx/store";
+import {AppState} from "../../state/app.state";
+import {signUp} from "../../state/auth/auth.actions";
+import {getAuthUserError} from "../../state/auth/auth.selectors";
 
 @Component({
   selector: 'app-registration',
@@ -15,8 +17,7 @@ export class RegistrationComponent implements OnInit, OnDestroy {
   signUpFormGroup: FormGroup  = new FormGroup({});
   signUpSub = new Subscription();
   constructor(private dialogRef: MatDialogRef<RegistrationComponent>,
-              private authService: AuthService,
-              private userDataStorageService: UserDataStorageService) { }
+              private store: Store<AppState>) { }
 
   ngOnInit(): void {
     this.signUpFormGroup = new FormGroup({
@@ -25,15 +26,10 @@ export class RegistrationComponent implements OnInit, OnDestroy {
         givenName: new FormControl(null,Validators.required),
         password: new FormControl(null, [Validators.required,Validators.minLength(6)])
     });
-
   }
 
   ngOnDestroy(): void {
     this.signUpSub.unsubscribe();
-  }
-
-  onClose(){
-    this.dialogRef.close();
   }
 
   onSignUp(){
@@ -48,16 +44,17 @@ export class RegistrationComponent implements OnInit, OnDestroy {
 
     const displayName = surname + ' '+ givenName;
 
-    this.signUpSub = this.authService.signUp(email,password,displayName).subscribe({
-      next: (data)=>{
-        this.userDataStorageService.createUser(data).then(()=>{
-          this.dialogRef.close();
-        });
-      },
-      error: (data)=>{
-        this.handleSignUpError(data);
+    this.store.dispatch(signUp({email,password,displayName}));
+
+    //Javítani kell az error kezelésen
+   this.store.select(getAuthUserError).subscribe(error=>{
+      if(error){
+        this.handleSignUpError(error);
+      }else{
+        this.dialogRef.close();
       }
-   });
+    });
+
 }
 
 
@@ -67,7 +64,7 @@ handleSignUpError(error: string){
     text: error,
     icon: 'error',
     confirmButtonText: 'Ok'
-  });
+  }).then();
 }
 
 emailValidation(){

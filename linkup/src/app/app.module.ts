@@ -19,6 +19,10 @@ import { PostsModule } from './posts/posts.module';
 import { NavbarModule } from './navbar/navbar.module';
 import {StoreModule} from "@ngrx/store";
 import {userReducer} from "./state/users/user.reducer";
+import {EffectsModule} from "@ngrx/effects";
+import {UserEffects} from "./state/users/user.effects";
+import {authReducer} from "./state/auth/auth.reducer";
+import {AuthEffects} from "./state/auth/auth.effects";
 
 @NgModule({
   declarations: [
@@ -35,7 +39,8 @@ import {userReducer} from "./state/users/user.reducer";
     FriendsModule,
     UsersModule,
     PostsModule,
-    StoreModule.forRoot({users: userReducer}),
+    StoreModule.forRoot({users: userReducer, user: authReducer}),
+    EffectsModule.forRoot([UserEffects,AuthEffects]),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),

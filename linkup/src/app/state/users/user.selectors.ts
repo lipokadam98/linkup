@@ -7,3 +7,18 @@ export const selectAllUsers = createSelector(
   selectUsers,
   (state: UsersState) => state.users
 );
+
+export const getLoadingState = createSelector(
+  selectUsers,
+  (state: UsersState) => state.status
+);
+
+export const getErrorState = createSelector(
+  selectUsers,
+  (state: UsersState) => state.error
+)
+
+export const getNewUserData = createSelector(
+  selectUsers,
+  (state: UsersState) => state.newUser
+)

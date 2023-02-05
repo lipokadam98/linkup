@@ -5,12 +5,14 @@ import { addUser, loadUsers, loadUsersFailure, loadUsersSuccess, removeUser } fr
 
 export interface UsersState {
   users: User[];
+  newUser: User | null;
   error: string | null;
   status: 'pending' | 'loading' | 'error' | 'success';
 }
 
 export const initialState: UsersState = {
-  users: [new User("asdasdas","sadsa","asdasdasdasdas")],
+  users: [],
+  newUser: null,
   error: null,
   status: 'pending'
 }
@@ -20,6 +22,7 @@ export const userReducer = createReducer(
 
   on(addUser, (state, {user})=> ({
     ...state,
+    newUser: user,
     users: [...state.users, user]
   })),
 
@@ -43,7 +46,7 @@ export const userReducer = createReducer(
     ...state,
     error: null,
     status: 'success',
-    users: [...state.users,...users]
+    users: users
   })),
 
 

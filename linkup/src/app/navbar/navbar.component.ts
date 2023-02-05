@@ -1,8 +1,9 @@
-import { User } from './../shared/models/user.model';
-import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { AuthService } from '../services/auth-services/auth.service';
-import { Component, OnInit } from '@angular/core';
+import {User} from '../shared/models/user.model';
+import {AuthService} from '../services/auth-services/auth.service';
+import {Component, OnInit} from '@angular/core';
+import {AppState} from "../state/app.state";
+import {Store} from "@ngrx/store";
+import {selectAuthUser} from "../state/auth/auth.selectors";
 
 
 @Component({
@@ -13,27 +14,22 @@ import { Component, OnInit } from '@angular/core';
 export class NavbarComponent implements OnInit {
 
   friendList: string[] = [];
-  isLoggedIn: boolean = false;
-  userSubscription: Subscription = new Subscription();
+
   user: User | null = null;
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService,private store: Store<AppState>) {
 
   }
 
   ngOnInit(): void {
 
-   this.userSubscription = this.authService.user.subscribe(userData=>{
-    this.user = userData;
-   })
+    this.store.select(selectAuthUser).subscribe(user=>{
+      this.user = user;
+    });
 
     for(let i = 0; i < 30; i ++){
       this.friendList.push(''+i);
     }
-  }
-
-  ngOnDestroy(){
-    this.userSubscription.unsubscribe();
   }
 
   logout(){
