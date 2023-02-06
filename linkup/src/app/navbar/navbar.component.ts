@@ -1,9 +1,9 @@
 import {User} from '../shared/models/user.model';
-import {AuthService} from '../services/auth-services/auth.service';
 import {Component, OnInit} from '@angular/core';
 import {AppState} from "../state/app.state";
 import {Store} from "@ngrx/store";
 import {selectAuthUser} from "../state/auth/auth.selectors";
+import {logout} from "../state/auth/auth.actions";
 
 
 @Component({
@@ -17,7 +17,7 @@ export class NavbarComponent implements OnInit {
 
   user: User | null = null;
 
-  constructor(private authService: AuthService,private store: Store<AppState>) {
+  constructor(private store: Store<AppState>) {
 
   }
 
@@ -33,7 +33,7 @@ export class NavbarComponent implements OnInit {
   }
 
   logout(){
-    this.authService.logout();
+    this.store.dispatch(logout());
   }
 
 }

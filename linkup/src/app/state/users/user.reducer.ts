@@ -1,6 +1,7 @@
 import { createReducer, on } from "@ngrx/store";
 import { User } from "src/app/shared/models/user.model";
 import { addUser, loadUsers, loadUsersFailure, loadUsersSuccess, removeUser } from "./user.actions";
+import {autoLogin} from "../auth/auth.actions";
 
 
 export interface UsersState {
@@ -34,6 +35,10 @@ export const userReducer = createReducer(
   on(loadUsers, (state)=> ({
     ...state,
     status: 'loading'
+  })),
+
+  on(autoLogin, (state)=> ({
+    ...state
   })),
 
   on(loadUsersFailure, (state, {error})=> ({

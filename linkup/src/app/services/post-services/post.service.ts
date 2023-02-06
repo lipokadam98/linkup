@@ -10,8 +10,6 @@ export class PostService{
   private posts: Post[] = [];
   postSubject = new BehaviorSubject<Post[]>([]);
 
-  constructor() { }
-
   getPost(index: number){
     return this.posts[index];
   }

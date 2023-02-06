@@ -7,7 +7,7 @@ import {addUser} from "../users/user.actions";
 import {from, map, of, switchMap, withLatestFrom} from "rxjs";
 import {catchError} from "rxjs/operators";
 import {selectAll} from "./auth.selectors";
-import {authFailure, signUp} from "./auth.actions";
+import {authFailure, authSuccess, autoLogin, logout, signIn, signUp} from "./auth.actions";
 import {User} from "../../shared/models/user.model";
 
 @Injectable()
@@ -24,14 +24,57 @@ export class AuthEffects{
         ofType(signUp),
         withLatestFrom(this.store.select(selectAll)),
         switchMap(([action])=> from(this.authService.signUp(action.email,action.password,action.displayName)).pipe(
-          map((user) => {
-            return addUser({user: new User(user.email,user.localId,user.displayName,null,null,new Date())})
+          map((data) => {
+            const expirationDate = new Date(new Date().getTime() + +data.expiresIn * 1000);
+            const user = new User(data.email,data.localId,data.displayName,data.idToken,expirationDate);
+            authSuccess({user: user})
+            return addUser({user: new User(user.email,data.localId,user.displayName,null,null,new Date())})
           }),
           catchError((error)=> {
             return of(authFailure({error}));
           })
         ))
-      ),
-    {dispatch: true}
+      )
   )
+
+  signIn$ = createEffect(()=>
+      this.actions$.pipe(
+        ofType(signIn),
+        withLatestFrom(this.store.select(selectAll)),
+        switchMap(([action])=> from(this.authService.signIn(action.email,action.password)).pipe(
+            map(data=> {
+              const expirationDate = new Date(new Date().getTime() + +data.expiresIn * 1000);
+              const user = new User(data.email,data.localId,data.displayName,data.idToken,expirationDate);
+              return authSuccess({user: user});
+            })
+          )
+        )
+      )
+  )
+
+  logout$ = createEffect(()=>
+    this.actions$.pipe(
+      ofType(logout),
+      switchMap(()=> this.authService.logout())
+    ),
+    {dispatch: false}
+  )
+
+  autoLogin$ = createEffect(()=>
+    this.actions$.pipe(
+      ofType(autoLogin),
+      switchMap(()=> from(this.authService.autoLogin()).pipe(
+          map(data=> {
+            if(data){
+              return authSuccess({user: data});
+            } else{
+              return authFailure({error: 'Hiba az auto login során a token érvényességi ideje lejárt!'})
+            }
+          })
+        )
+      )
+    )
+  )
+
 }
+

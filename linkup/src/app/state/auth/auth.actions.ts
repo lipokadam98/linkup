@@ -16,6 +16,10 @@ export const signIn = createAction(
   props<{ email: string, password: string}>()
 )
 
+export const autoLogin = createAction(
+  '[Auth Page] AutoLogin',
+)
+
 export const authFailure = createAction(
   '[Auth API] Failure',
   props<{ error: string}>()

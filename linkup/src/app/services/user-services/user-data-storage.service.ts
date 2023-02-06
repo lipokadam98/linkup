@@ -32,7 +32,6 @@ export class UserDataStorageService {
   }
 
   getAllUsers(){
-    console.log("all user data");
     return collectionData(this.usersCollection, {
       idField: 'id',
     }) as Observable<User[]>;

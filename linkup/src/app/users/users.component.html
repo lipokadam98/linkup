@@ -1,6 +1,10 @@
-<p>users works!</p>
-<div *ngFor="let user of allUsers$ | async">
-  {{user.displayName}}
-</div>
-<mat-progress-spinner *ngIf="status === 'loading'" mode="indeterminate"></mat-progress-spinner>
-<button mat-raised-button (click)="addUser()">Add User</button>
+
+<main class="flex flex-col items-center justify-center">
+  <h2 class="text-white">Felhasználók akiket ismerhetsz</h2>
+  <section>
+    <app-user *ngFor="let user of allUsers$ | async" [user]="user"></app-user>
+  </section>
+
+</main>
+
+

@@ -1,14 +1,14 @@
 import {Router} from '@angular/router';
 import {Subscription, take} from 'rxjs';
 import {RegistrationComponent} from '../registration/registration.component';
-import {AuthService} from '../../services/auth-services/auth.service';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import Swal from 'sweetalert2';
 import {Store} from "@ngrx/store";
 import {AppState} from "../../state/app.state";
-import {selectAuthUser} from "../../state/auth/auth.selectors";
+import {getAuthUserError, selectAuthUser} from "../../state/auth/auth.selectors";
+import {signIn} from "../../state/auth/auth.actions";
 
 @Component({
   selector: 'app-auth',
@@ -18,9 +18,7 @@ import {selectAuthUser} from "../../state/auth/auth.selectors";
 export class AuthComponent implements OnInit, OnDestroy {
   authFormGroup: FormGroup = new FormGroup({});
   authSub = new Subscription();
-
-  constructor(private authService: AuthService,
-              private matDialog: MatDialog,
+  constructor(private matDialog: MatDialog,
               private router: Router,
               private store: Store<AppState>) { }
 
@@ -32,7 +30,7 @@ export class AuthComponent implements OnInit, OnDestroy {
 
     this.store.select(selectAuthUser).pipe(take(1)).subscribe(user=>{
       if(user){
-        this.router.navigate(['']);
+        this.router.navigate(['']).then();
       }
     });
   }
@@ -51,12 +49,13 @@ export class AuthComponent implements OnInit, OnDestroy {
     const email = this.authFormGroup.get('email')?.value;
     const password = this.authFormGroup.get('password')?.value;
 
-    this.authSub = this.authService.signIn(email,password).subscribe({
-       error: (error)=>{
-          this.handleAuthError(error);
-       }
-    });
+    this.store.dispatch(signIn({email,password}));
 
+    this.store.select(getAuthUserError).subscribe(error=>{
+      if(error){
+        this.handleAuthError(error);
+      }
+    });
   }
 
   handleAuthError(error: string){
@@ -65,7 +64,7 @@ export class AuthComponent implements OnInit, OnDestroy {
       text: error,
       icon: 'error',
       confirmButtonText: 'Ok'
-    });
+    }).then();
   }
 
   onRegistration(){
