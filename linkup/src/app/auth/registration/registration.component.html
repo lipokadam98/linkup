@@ -1,7 +1,6 @@
 <div mat-dialog-title>
   <div class="flex justify-between items-center">
     <span>Regisztráció</span>
-    <button mat-button mat-dialog-close><mat-icon>close</mat-icon></button>
   </div>
 </div>
 <mat-dialog-content>
@@ -36,5 +35,6 @@
   </form>
 </mat-dialog-content>
 <mat-dialog-actions class="justify-center">
-  <button mat-raised-button class="bg-green-600" [disabled]="!signUpFormGroup.valid" (click)="onSignUp()" cdkFocusInitial>Regisztráció</button>
+  <button mat-raised-button class="bg-green-600" [disabled]="!signUpFormGroup.valid" (click)="onSignUp()">Regisztráció</button>
+  <button mat-raised-button class="bg-red-500" (click)="onCloseDialog()">Mégsem</button>
 </mat-dialog-actions>

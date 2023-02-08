@@ -84,4 +84,8 @@ passwordValidation(){
   return this.signUpFormGroup.get('password')?.hasError('minlength') ? 'A jelszó hossza nem megfelelő' : '';
 }
 
+  onCloseDialog(){
+    this.dialogRef.close();
+  }
+
 }

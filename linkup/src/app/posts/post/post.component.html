@@ -1,8 +1,16 @@
 <section
-  class="text-cyan-50 container bg-slate-100 bg-opacity-20 shadow-sm p-5 mt-2 rounded-lg"
+  class="text-cyan-50 container bg-slate-100 bg-opacity-20 shadow-sm p-5 mt-4 rounded-lg"
 >
   <div class="flex flex-row justify-between items-center">
-    <span>{{ getUserName() }}</span>
+    <div class="flex gap-1 mb-2">
+      <img src="../../../assets/cat.webp" alt="cat" class="profile-picture">
+      <div class="flex-col">
+        <p class="text-xs margin-0 font-500">{{ getUserName() }}</p>
+        <p class="text-xs margin-0"> {{ post?.creationDate | date : "YYYY-MM-dd HH:mm" }}</p>
+      </div>
+
+    </div>
+
     <button
       *ngIf="canDelete"
       (click)="removePost()"
@@ -13,12 +21,6 @@
     </button>
   </div>
 
-  <p class="break-words">{{ post?.message }}</p>
-
-  <div class="flex flex-row justify-end">
-    {{ post?.creationDate | date : "YYYY-MM-dd HH:mm" }}
-  </div>
-  <footer>
-    Hozzászólások
-  </footer>
+  <p class="break-words text-sm">{{ post?.message }}</p>
+  <img src="../../../assets/cat.webp" alt="cat" class="post-picture">
 </section>

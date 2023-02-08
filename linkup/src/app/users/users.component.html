@@ -1,10 +1,9 @@
 
-<main class="flex flex-col items-center justify-center">
+<section class="flex flex-col items-center justify-center">
   <h2 class="text-white">Felhasználók akiket ismerhetsz</h2>
-  <section>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
     <app-user *ngFor="let user of allUsers$ | async" [user]="user"></app-user>
-  </section>
-
-</main>
+  </div>
+</section>
 
 

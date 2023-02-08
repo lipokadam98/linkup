@@ -1,9 +1,9 @@
 import {createAction, props} from "@ngrx/store";
 import {User} from "../../shared/models/user.model";
 
-export const authSuccess = createAction(
+export const storeUser = createAction(
   '[Auth API] Success',
-  props<{ user: User}>()
+  props<{ user: User | null}>()
 )
 
 export const signUp = createAction(

@@ -51,7 +51,7 @@ export class AuthComponent implements OnInit, OnDestroy {
 
     this.store.dispatch(signIn({email,password}));
 
-    this.store.select(getAuthUserError).subscribe(error=>{
+    this.authSub = this.store.select(getAuthUserError).subscribe(error=>{
       if(error){
         this.handleAuthError(error);
       }

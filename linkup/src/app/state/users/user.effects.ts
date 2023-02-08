@@ -8,8 +8,9 @@ import {UserDataStorageService} from "../../services/user-services/user-data-sto
 import {catchError} from "rxjs/operators";
 import {getNewUserData} from "./user.selectors";
 
-/**Effects are listening to actions being dispatched and can make async calls towards backend services.
- *They way we can react to actions is because we need to inject the Actions into our constructor,
+/**
+ * Effects are listening to actions being dispatched and can make async calls towards backend services.
+ *The way we can react to actions is because we need to inject the Actions into our constructor,
  * after that we will have the stream of actions and can differentiate between action types
  */
 @Injectable()

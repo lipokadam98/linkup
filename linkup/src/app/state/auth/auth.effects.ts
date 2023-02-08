@@ -7,7 +7,7 @@ import {addUser} from "../users/user.actions";
 import {from, map, of, switchMap, withLatestFrom} from "rxjs";
 import {catchError} from "rxjs/operators";
 import {selectAll} from "./auth.selectors";
-import {authFailure, authSuccess, autoLogin, logout, signIn, signUp} from "./auth.actions";
+import {authFailure, storeUser, autoLogin, logout, signIn, signUp} from "./auth.actions";
 import {User} from "../../shared/models/user.model";
 
 @Injectable()
@@ -27,7 +27,7 @@ export class AuthEffects{
           map((data) => {
             const expirationDate = new Date(new Date().getTime() + +data.expiresIn * 1000);
             const user = new User(data.email,data.localId,data.displayName,data.idToken,expirationDate);
-            authSuccess({user: user})
+            storeUser({user: user})
             return addUser({user: new User(user.email,data.localId,user.displayName,null,null,new Date())})
           }),
           catchError((error)=> {
@@ -45,7 +45,10 @@ export class AuthEffects{
             map(data=> {
               const expirationDate = new Date(new Date().getTime() + +data.expiresIn * 1000);
               const user = new User(data.email,data.localId,data.displayName,data.idToken,expirationDate);
-              return authSuccess({user: user});
+              return storeUser({user: user});
+            }),
+            catchError((error)=> {
+              return of(authFailure({error}));
             })
           )
         )
@@ -66,7 +69,12 @@ export class AuthEffects{
       switchMap(()=> from(this.authService.autoLogin()).pipe(
           map(data=> {
             if(data){
-              return authSuccess({user: data});
+              if(data.userId){
+                return storeUser({user: data});
+              }else{
+                return storeUser({user: null})
+              }
+
             } else{
               return authFailure({error: 'Hiba az auto login során a token érvényességi ideje lejárt!'})
             }
