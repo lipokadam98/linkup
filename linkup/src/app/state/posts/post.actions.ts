@@ -31,7 +31,7 @@ export const deletePostFailure = createAction(
 
 export const createPost = createAction(
   '[Posts Page] Create Post',
-  props<{message: string}>()
+  props<{message: string,image: string | undefined}>()
 )
 
 export const deletePost = createAction(

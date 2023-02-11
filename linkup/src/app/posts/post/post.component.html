@@ -22,5 +22,5 @@
   </div>
 
   <p class="break-words text-sm">{{ post?.message }}</p>
-  <img src="../../../assets/cat.webp" alt="cat" class="post-picture">
+  <img *ngIf="post?.image" [src]="post?.image" alt="cat" class="post-picture">
 </section>

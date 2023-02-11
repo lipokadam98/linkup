@@ -1,8 +1,22 @@
 
-<form [formGroup]="newPostForm" (ngSubmit)="onNewPost()"
-      class="bg-slate-400 border-2 p-3 sticky top-14  rounded-lg shadow-xl flex justify-between items-center gap-2">
-      <img src="../../../assets/cat.webp" alt="cat" class="profile-picture h-w-40">
-      <input class="p-2 flex-1 rounded-full hover:shadow-xl" formControlName="message" placeholder="Mi jár a fejedben...">
-      <button [disabled]="!newPostForm.valid" class="bg-sky-600" mat-raised-button type="submit">Mentés</button>
-</form>
+<section class="bg-slate-400 border-2 p-3 sticky top-14 rounded-lg shadow-xl">
+  <form [formGroup]="newPostForm" (ngSubmit)="onNewPost()" class="flex justify-between items-center gap-2">
+    <img alt="cat" class="profile-picture h-w-40" src="../../../assets/cat.webp">
+    <input class="p-2 flex-1 rounded-full hover:shadow-xl" formControlName="message" placeholder="Mi jár a fejedben...">
+    <input #fileInput accept="image/*" (change)="processImage($event)" class="hidden" type="file">
+
+    <mat-icon class="text-blue-600 cursor-pointer" (click)="fileInput.click()">
+      image
+    </mat-icon>
+
+    <button [disabled]="!newPostForm.valid" class="bg-sky-600" mat-raised-button type="submit">Mentés</button>
+  </form>
+
+  <div *ngIf="uploadedImage" class="uploaded-image mt-2">
+    <img [src]="uploadedImage" alt="image" class="rounded-sm">
+    <button (click)="onCancelImage()" mat-icon-button class="close-button"><mat-icon>close</mat-icon></button>
+  </div>
+
+</section>
+
 

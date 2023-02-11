@@ -45,7 +45,7 @@ export class PostsEffects{
     this.actions$.pipe(
       ofType(createPost),
       withLatestFrom(this.store.select(selectMessage)),
-      switchMap(([action])=> from(this.postDataStorageService.createPost(action.message)).pipe(
+      switchMap(([action])=> from(this.postDataStorageService.createPost(action.message,action.image)).pipe(
         map(()=> createPostSuccess()),
         catchError((error)=> of(createPostFailure({error: error})))
           )

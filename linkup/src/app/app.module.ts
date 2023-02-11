@@ -25,6 +25,7 @@ import {authReducer} from "./state/auth/auth.reducer";
 import {AuthEffects} from "./state/auth/auth.effects";
 import {postReducer} from "./state/posts/post.reducer";
 import {PostsEffects} from "./state/posts/post.effects";
+import {NgxImageCompressService} from "ngx-image-compress";
 
 @NgModule({
   declarations: [
@@ -50,7 +51,7 @@ import {PostsEffects} from "./state/posts/post.effects";
     provideStorage(() => getStorage()),
     NavbarModule,
   ],
-  providers: [],
+  providers: [NgxImageCompressService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

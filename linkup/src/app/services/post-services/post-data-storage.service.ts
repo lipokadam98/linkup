@@ -50,9 +50,9 @@ export class PostDataStorageService {
     return Promise.resolve(posts);
   }
 
-  createPost(message: string){
+  createPost(message: string,image: string | undefined){
    return this.store.select(selectAuthUser).pipe(switchMap(
-      (user)=> addDoc(this.postsCollection,JSON.parse(JSON.stringify(new Post(message,new Date(),user?.userId))))
+      (user)=> addDoc(this.postsCollection,JSON.parse(JSON.stringify(new Post(message,new Date(),user?.userId,image))))
      )
     )
   }
