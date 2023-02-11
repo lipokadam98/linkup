@@ -1,19 +1,27 @@
 import { createReducer, on } from "@ngrx/store";
 import { User } from "src/app/shared/models/user.model";
-import { addUser, loadUsers, loadUsersFailure, loadUsersSuccess, removeUser } from "./user.actions";
+import {
+  addUser,
+  getUserDetailById,
+  loadUserDetailById,
+  loadUsers,
+  loadUsersFailure,
+  loadUsersSuccess,
+  removeUser
+} from "./user.actions";
 import {autoLogin} from "../auth/auth.actions";
 
 
 export interface UsersState {
   users: User[];
-  newUser: User | null;
+  selectedUser: User | undefined;
   error: string | null;
   status: 'pending' | 'loading' | 'error' | 'success';
 }
 
 export const initialState: UsersState = {
   users: [],
-  newUser: null,
+  selectedUser: undefined,
   error: null,
   status: 'pending'
 }
@@ -25,6 +33,16 @@ export const userReducer = createReducer(
     ...state,
     newUser: user,
     users: [...state.users, user]
+  })),
+
+  on(getUserDetailById, (state)=> ({
+    ...state,
+    selectedUser: undefined
+  })),
+
+  on(loadUserDetailById, (state, {user})=> ({
+    ...state,
+    selectedUser: user
   })),
 
   on(removeUser,(state,{id})=> ({
@@ -53,6 +71,5 @@ export const userReducer = createReducer(
     status: 'success',
     users: users
   })),
-
 
 )

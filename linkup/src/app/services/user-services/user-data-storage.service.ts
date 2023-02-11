@@ -25,10 +25,14 @@ export class UserDataStorageService {
 
    async getUserById(userId: string){
     const q = query(this.usersCollection, where("userId", "==", userId));
-    const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
-          return doc.data() as User;
-    });
+    let user: User | undefined;
+
+      const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            user = doc.data() as User;
+      });
+
+    return Promise.resolve(user);
   }
 
   getAllUsers(){

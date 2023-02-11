@@ -18,6 +18,6 @@ import { PostComponent } from './post/post.component';
     MatButtonModule,
     MatTooltipModule
   ],
-  exports: [PostsComponent]
+    exports: [PostsComponent, PostComponent]
 })
 export class PostsModule { }

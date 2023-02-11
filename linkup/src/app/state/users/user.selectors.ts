@@ -18,7 +18,7 @@ export const getErrorState = createSelector(
   (state: UsersState) => state.error
 )
 
-export const getNewUserData = createSelector(
+export const getSelectedUser = createSelector(
   selectUsers,
-  (state: UsersState) => state.newUser
+  (state: UsersState) => state.selectedUser
 )

@@ -7,12 +7,14 @@ import {
   deletePost,
   loadPosts,
   loadPostsFailure,
-  loadPostsSuccess, deletePostSuccess, deletePostFailure
+  loadPostsSuccess, deletePostSuccess, deletePostFailure, loadUserPosts, getPostsByUserId
 } from "./post.actions";
 
 export interface PostsState{
   posts: Post[],
+  userPosts: Post[],
   deleteId: string | null,
+  userId: string | null,
   message: string | null,
   error: string | null,
   status: 'pending' | 'loading' | 'error' | 'success';
@@ -21,7 +23,9 @@ export interface PostsState{
 export const initialState: PostsState = {
   posts: [],
   message: null,
+  userId: null,
   deleteId: null,
+  userPosts: [],
   error: null,
   status: 'pending'
 }
@@ -78,5 +82,18 @@ export const postReducer = createReducer(
     error: null,
     status: 'success',
     posts: posts
+  })),
+
+  on(loadUserPosts, (state, {posts})=> ({
+    ...state,
+    error: null,
+    status: 'success',
+    userPosts: posts
+  })),
+
+  on(getPostsByUserId, (state, {userId})=> ({
+    ...state,
+    userId: userId,
+    userPosts: []
   })),
 )

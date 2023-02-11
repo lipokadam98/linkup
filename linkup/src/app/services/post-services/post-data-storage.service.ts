@@ -6,7 +6,10 @@ import {
   CollectionReference,
   deleteDoc,
   doc,
-  Firestore
+  Firestore,
+  getDocs,
+  query,
+  where
 } from '@angular/fire/firestore';
 import {addDoc, collection} from '@firebase/firestore';
 import {Post} from 'src/app/posts/model/post.model';
@@ -33,6 +36,18 @@ export class PostDataStorageService {
        idField: 'id',
      }) as Observable<Post[]>;
    }));
+  }
+
+  async getPostsByUserId(userId: string){
+    let posts: Post[] = [];
+
+      const q = query(this.postsCollection, where("userId", "==", userId));
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        posts.push(doc.data() as Post);
+      });
+
+    return Promise.resolve(posts);
   }
 
   createPost(message: string){

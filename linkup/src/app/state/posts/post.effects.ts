@@ -6,15 +6,15 @@ import {AppState} from "../app.state";
 import {
   createPost,
   createPostFailure,
-  createPostSuccess, deletePost, deletePostFailure, deletePostSuccess,
+  createPostSuccess, deletePost, deletePostFailure, deletePostSuccess, getPostsByUserId,
   loadPosts,
   loadPostsFailure,
-  loadPostsSuccess
+  loadPostsSuccess, loadUserPosts
 } from "./post.actions";
 import {from, map, of, switchMap, withLatestFrom} from "rxjs";
 import {catchError} from "rxjs/operators";
 import {Post} from "../../posts/model/post.model";
-import {selectDeleteId, selectMessage} from "./post.selectors";
+import {selectAll, selectDeleteId, selectMessage} from "./post.selectors";
 
 @Injectable()
 export class PostsEffects{
@@ -31,7 +31,7 @@ export class PostsEffects{
         from(this.postDataStorageService.getAllPosts()).pipe(
           map( (posts) =>{
             posts.sort((a: Post, b: Post) => {
-              return new Date(a.creationDate).getTime() - new Date(b.creationDate).getTime();
+              return new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime();
             })
             return loadPostsSuccess({posts: posts})
           }),
@@ -63,5 +63,22 @@ export class PostsEffects{
       )
     )
    )
-  )
+  );
+
+  loadUserPosts$ = createEffect(()=>
+    this.actions$.pipe(
+      ofType(getPostsByUserId),
+      withLatestFrom(this.store.select(selectAll)),
+      switchMap(([action])=>
+        from(this.postDataStorageService.getPostsByUserId(action.userId)).pipe(
+          map( (posts) =>{
+            posts.sort((a: Post, b: Post) => {
+              return new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime();
+            })
+            return loadUserPosts({posts: posts})
+          })
+        )
+      )
+    )
+  );
 }

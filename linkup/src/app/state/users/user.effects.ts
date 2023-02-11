@@ -2,11 +2,18 @@ import {Injectable} from "@angular/core";
 import {Store} from "@ngrx/store";
 import {AppState} from "../app.state";
 import {Actions, createEffect, ofType} from "@ngrx/effects";
-import {addUser, loadUsers, loadUsersFailure, loadUsersSuccess} from "./user.actions";
+import {
+  addUser,
+  getUserDetailById,
+  loadUserDetailById,
+  loadUsers,
+  loadUsersFailure,
+  loadUsersSuccess
+} from "./user.actions";
 import {from, map, of, switchMap, withLatestFrom} from "rxjs";
 import {UserDataStorageService} from "../../services/user-services/user-data-storage.service";
 import {catchError} from "rxjs/operators";
-import {getNewUserData} from "./user.selectors";
+import {selectUsers} from "./user.selectors";
 
 /**
  * Effects are listening to actions being dispatched and can make async calls towards backend services.
@@ -37,12 +44,26 @@ export class UserEffects{
   saveUser$ = createEffect(()=>
   this.actions$.pipe(
     ofType(addUser),
-    withLatestFrom(this.store.select(getNewUserData)),
+    withLatestFrom(this.store.select(selectUsers)),
     switchMap(([action])=> from(this.userDataStorageService.createUser(action.user))
     )
   ),
     {dispatch: false}
   )
+
+  loadUserDetails$ = createEffect(()=>
+    this.actions$.pipe(
+      ofType(getUserDetailById),
+      withLatestFrom(this.store.select(selectUsers)),
+      switchMap(([action])=>
+        from(this.userDataStorageService.getUserById(action.id)).pipe(
+          map( (user) =>{
+            return loadUserDetailById({user: user})
+          })
+        )
+      )
+    )
+  );
 }
 
 

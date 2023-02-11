@@ -6,11 +6,20 @@ export const addUser = createAction(
   props<{user: User}>()
 )
 
+export const getUserDetailById = createAction(
+  '[Users Page] Get User Detail',
+  props<{id: string}>()
+)
+
+export const loadUserDetailById = createAction(
+  '[Users Page] Load User Detail',
+  props<{user: User | undefined}>()
+)
+
 export const removeUser = createAction(
   '[Users Page] Remove User',
   props<{ id: string}>()
 )
-
 export const loadUsers = createAction('[Users Page] Load Users');
 
 export const loadUsersSuccess = createAction(

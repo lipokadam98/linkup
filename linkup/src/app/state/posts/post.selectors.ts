@@ -27,3 +27,13 @@ export const selectDeleteId = createSelector(
   selectPosts,
   (state: PostsState) => state.deleteId
 );
+
+export const selectAll = createSelector(
+  selectPosts,
+  (state: PostsState) => state
+);
+
+export const selectUserPosts = createSelector(
+  selectPosts,
+  (state: PostsState) => state.userPosts
+);

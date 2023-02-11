@@ -10,6 +10,16 @@ export const createPostFailure = createAction(
      props<{error: string}>()
 )
 
+export const getPostsByUserId = createAction(
+  '[User Posts Page] Get Posts by UserId',
+  props<{userId: string}>()
+)
+
+export const loadUserPosts = createAction(
+  '[User Posts Page] Load Posts by UserId',
+  props<{posts: Post[]}>()
+)
+
 export const deletePostSuccess = createAction(
   '[Posts Page] Delete Post Success'
 )
