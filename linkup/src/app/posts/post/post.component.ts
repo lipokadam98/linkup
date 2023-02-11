@@ -1,10 +1,10 @@
 import {User} from '../../shared/models/user.model';
 import {Post} from '../model/post.model';
 import {Component, Input, OnInit} from '@angular/core';
-import {PostDataStorageService} from 'src/app/services/post-services/post-data-storage.service';
 import {Store} from "@ngrx/store";
 import {AppState} from "../../state/app.state";
 import {selectAuthUser} from "../../state/auth/auth.selectors";
+import {deletePost} from "../../state/posts/post.actions";
 
 @Component({
   selector: 'app-post',
@@ -20,8 +20,7 @@ export class PostComponent implements OnInit {
 
   user: User | null | undefined;
 
-  constructor(private store: Store<AppState>,
-              private postDataStorageService: PostDataStorageService) {
+  constructor(private store: Store<AppState>) {
 
   }
 
@@ -33,7 +32,9 @@ export class PostComponent implements OnInit {
   }
 
   removePost(){
-    this.postDataStorageService.deletePost(this.post?.id);
+    if(this.post?.id){
+      this.store.dispatch(deletePost({id: this.post.id}));
+    }
   }
 
   getUserName(){

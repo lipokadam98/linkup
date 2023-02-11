@@ -23,6 +23,8 @@ import {EffectsModule} from "@ngrx/effects";
 import {UserEffects} from "./state/users/user.effects";
 import {authReducer} from "./state/auth/auth.reducer";
 import {AuthEffects} from "./state/auth/auth.effects";
+import {postReducer} from "./state/posts/post.reducer";
+import {PostsEffects} from "./state/posts/post.effects";
 
 @NgModule({
   declarations: [
@@ -39,8 +41,8 @@ import {AuthEffects} from "./state/auth/auth.effects";
     FriendsModule,
     UsersModule,
     PostsModule,
-    StoreModule.forRoot({users: userReducer, user: authReducer}),
-    EffectsModule.forRoot([UserEffects,AuthEffects]),
+    StoreModule.forRoot({users: userReducer, user: authReducer, posts: postReducer }),
+    EffectsModule.forRoot([UserEffects,AuthEffects,PostsEffects]),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),

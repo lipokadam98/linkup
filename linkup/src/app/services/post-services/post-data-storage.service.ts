@@ -1,6 +1,5 @@
-import {PostService} from './post.service';
 import {Injectable} from '@angular/core';
-import {map, Observable, take} from 'rxjs';
+import {Observable, switchMap} from 'rxjs';
 import {
   collectionChanges,
   collectionData,
@@ -23,41 +22,28 @@ export class PostDataStorageService {
   private readonly postsCollection : CollectionReference;
 
   constructor(
-    private postsService: PostService,
     private store: Store<AppState>,
     private readonly firestore: Firestore) {
       this.postsCollection = collection(this.firestore,'posts');
     }
 
   getAllPosts(){
-    collectionChanges(this.postsCollection).subscribe(()=>{
-      const posts = collectionData(this.postsCollection, {
-        idField: 'id',
-      }) as Observable<Post[]>;
-
-      posts.pipe(take(1)).pipe(map((posts: Post[])=>{
-        return posts.sort((a: Post, b: Post) => {
-          return new Date(a.creationDate).getTime() - new Date(b.creationDate).getTime();
-        });
-
-      })).subscribe(data=>{
-        this.postsService.addPosts(data);
-      });
-    });
+   return collectionChanges(this.postsCollection).pipe(switchMap(()=>{
+     return collectionData(this.postsCollection, {
+       idField: 'id',
+     }) as Observable<Post[]>;
+   }));
   }
 
   createPost(message: string){
-    this.store.select(selectAuthUser).pipe(take(1)).subscribe( user =>{
-      if(user){
-        addDoc(this.postsCollection,JSON.parse(JSON.stringify(new Post(message,new Date(),user.userId)))).then();
-      }
-    });
+   return this.store.select(selectAuthUser).pipe(switchMap(
+      (user)=> addDoc(this.postsCollection,JSON.parse(JSON.stringify(new Post(message,new Date(),user?.userId))))
+     )
+    )
   }
 
   deletePost(id: string | undefined){
     const postDocumentumReference = doc(this.firestore, `posts/${id}`);
-    deleteDoc(postDocumentumReference).then(()=>{
-      this.postsService.deletePost(id);
-    });
+    return deleteDoc(postDocumentumReference);
   }
 }

@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { PostDataStorageService } from '../services/post-services/post-data-storage.service';
-import { PostService } from '../services/post-services/post.service';
-import { Observable } from 'rxjs';
-import { Post } from './model/post.model';
+import {Component, OnInit} from '@angular/core';
+import {Observable} from 'rxjs';
+import {Post} from './model/post.model';
+import {Store} from "@ngrx/store";
+import {AppState} from "../state/app.state";
+import {loadPosts} from "../state/posts/post.actions";
+import {selectAllPosts} from "../state/posts/post.selectors";
 
 @Component({
   selector: 'app-posts',
@@ -13,12 +15,13 @@ export class PostsComponent implements OnInit {
 
   posts : Observable<Post[]> = new Observable<Post[]>();
 
-  constructor(private postDataStorageService: PostDataStorageService,
-              private postService: PostService) { }
+  constructor(private store: Store<AppState>) { }
 
   ngOnInit(): void {
-    this.postDataStorageService.getAllPosts();
-    this.posts = this.postService.postSubject.asObservable();
+    this.store.dispatch(loadPosts());
+
+    this.posts = this.store.select(selectAllPosts);
+
   }
 
 }

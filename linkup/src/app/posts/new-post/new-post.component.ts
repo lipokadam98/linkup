@@ -1,6 +1,8 @@
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Component, OnInit} from '@angular/core';
-import { PostDataStorageService } from 'src/app/services/post-services/post-data-storage.service';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
+import {AppState} from "../../state/app.state";
+import {Store} from "@ngrx/store";
+import {createPost} from "../../state/posts/post.actions";
 
 @Component({
   selector: 'app-new-post',
@@ -11,7 +13,7 @@ export class NewPostComponent implements OnInit{
 
   newPostForm: FormGroup = new FormGroup({});
 
-  constructor(private postDataStorageService: PostDataStorageService) { }
+  constructor(private store: Store<AppState>) { }
 
   ngOnInit(): void {
 
@@ -27,7 +29,7 @@ export class NewPostComponent implements OnInit{
 
   onNewPost(){
     const value = this.newPostForm.get('message')?.value;
-    this.postDataStorageService.createPost(value);
+    this.store.dispatch(createPost({message: value}))
     this.newPostForm.reset();
     window.scroll(0,0);
   }
