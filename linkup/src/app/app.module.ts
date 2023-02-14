@@ -26,10 +26,15 @@ import {AuthEffects} from "./state/auth/auth.effects";
 import {postReducer} from "./state/posts/post.reducer";
 import {PostsEffects} from "./state/posts/post.effects";
 import {NgxImageCompressService} from "ngx-image-compress";
+import {LeftSideNavComponent} from "./welcome/left-side-nav/left-side-nav.component";
+import {RightSideNavComponent} from "./welcome/right-side-nav/right-side-nav.component";
+import {MatButtonModule} from "@angular/material/button";
 
 @NgModule({
   declarations: [
     AppComponent,
+    LeftSideNavComponent,
+    RightSideNavComponent,
     WelcomeComponent,
     NotFoundComponent
   ],
@@ -42,14 +47,15 @@ import {NgxImageCompressService} from "ngx-image-compress";
     FriendsModule,
     UsersModule,
     PostsModule,
-    StoreModule.forRoot({users: userReducer, user: authReducer, posts: postReducer }),
-    EffectsModule.forRoot([UserEffects,AuthEffects,PostsEffects]),
+    StoreModule.forRoot({users: userReducer, user: authReducer, posts: postReducer}),
+    EffectsModule.forRoot([UserEffects, AuthEffects, PostsEffects]),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     provideMessaging(() => getMessaging()),
     provideStorage(() => getStorage()),
     NavbarModule,
+    MatButtonModule,
   ],
   providers: [NgxImageCompressService],
   bootstrap: [AppComponent]

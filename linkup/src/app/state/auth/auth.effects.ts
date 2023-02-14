@@ -27,8 +27,8 @@ export class AuthEffects{
           map((data) => {
             const expirationDate = new Date(new Date().getTime() + +data.expiresIn * 1000);
             const user = new User(data.email,data.localId,data.displayName,data.idToken,expirationDate);
-            storeUser({user: user})
-            return addUser({user: new User(user.email,data.localId,user.displayName,null,null,new Date())})
+            addUser({user: user})
+            return storeUser({user: user})
           }),
           catchError((error)=> {
             return of(authFailure({error}));
@@ -36,6 +36,7 @@ export class AuthEffects{
         ))
       )
   )
+
 
   signIn$ = createEffect(()=>
       this.actions$.pipe(
@@ -45,7 +46,8 @@ export class AuthEffects{
             map(data=> {
               const expirationDate = new Date(new Date().getTime() + +data.expiresIn * 1000);
               const user = new User(data.email,data.localId,data.displayName,data.idToken,expirationDate);
-              return storeUser({user: user});
+              addUser({user: user})
+              return storeUser({user: user})
             }),
             catchError((error)=> {
               return of(authFailure({error}));

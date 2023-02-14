@@ -1,22 +1,16 @@
 import {User} from "../../shared/models/user.model";
 import {createReducer, on} from "@ngrx/store";
 
-import {authFailure, storeUser, logout, signUp} from "./auth.actions";
+import {authFailure, storeUser, logout, signUp, signIn} from "./auth.actions";
 
 export interface AuthState {
   user: User | null;
   error: string | null;
-  email: string | null;
-  password: string | null;
-  displayName: string | null;
   status: 'pending' | 'loading' | 'error' | 'success';
 }
 
 export const initialState: AuthState = {
   user: null,
-  email: null,
-  password: null,
-  displayName: null,
   error: null,
   status: 'pending'
 }
@@ -26,14 +20,18 @@ export const authReducer = createReducer(
 
   on(storeUser, (state, {user})=> ({
     ...state,
-    user: user
+    user: user,
+    status: 'success'
   })),
 
-  on(signUp, (state, {email,password,displayName}) =>({
+  on(signUp, (state) =>({
     ...state,
-    password: password,
-    email: email,
-    displayName: displayName,
+    status: 'pending',
+    error: null
+  })),
+
+  on(signIn, (state) =>({
+    ...state,
     status: 'pending',
     error: null
   })),

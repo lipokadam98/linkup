@@ -1,6 +1,5 @@
 import {Router} from '@angular/router';
-import {Subscription, take} from 'rxjs';
-import {RegistrationComponent} from '../registration/registration.component';
+import {Subscription} from 'rxjs';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
@@ -8,7 +7,7 @@ import Swal from 'sweetalert2';
 import {Store} from "@ngrx/store";
 import {AppState} from "../../state/app.state";
 import {getAuthUserError, selectAuthUser} from "../../state/auth/auth.selectors";
-import {signIn} from "../../state/auth/auth.actions";
+import {signIn, signUp} from "../../state/auth/auth.actions";
 
 @Component({
   selector: 'app-auth',
@@ -18,6 +17,8 @@ import {signIn} from "../../state/auth/auth.actions";
 export class AuthComponent implements OnInit, OnDestroy {
   authFormGroup: FormGroup = new FormGroup({});
   authSub = new Subscription();
+
+  isLogin = true;
   constructor(private matDialog: MatDialog,
               private router: Router,
               private store: Store<AppState>) { }
@@ -25,10 +26,11 @@ export class AuthComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.authFormGroup = new FormGroup({
       'email': new FormControl(null,[Validators.required,Validators.email]),
+      'username': new FormControl(null,[Validators.required]),
       'password': new FormControl(null,[Validators.required,Validators.minLength(6)])
     });
 
-    this.store.select(selectAuthUser).pipe(take(1)).subscribe(user=>{
+    this.store.select(selectAuthUser).subscribe(user=>{
       if(user){
         this.router.navigate(['']).then();
       }
@@ -42,14 +44,15 @@ export class AuthComponent implements OnInit, OnDestroy {
 
   authenticate(){
 
-    if(!this.authFormGroup.valid){
-      return;
-    }
-
     const email = this.authFormGroup.get('email')?.value;
     const password = this.authFormGroup.get('password')?.value;
+    const displayName = this.authFormGroup.get('username')?.value;
 
-    this.store.dispatch(signIn({email,password}));
+    if(this.isLogin){
+      this.store.dispatch(signIn({email,password}));
+    }else{
+      this.store.dispatch(signUp({email,password,displayName}));
+    }
 
     this.authSub = this.store.select(getAuthUserError).subscribe(error=>{
       if(error){
@@ -67,12 +70,24 @@ export class AuthComponent implements OnInit, OnDestroy {
     }).then();
   }
 
-  onRegistration(){
-    this.matDialog.open(RegistrationComponent,
-    {
-      disableClose: true,
-      panelClass: 'dialog-style'
-    });
+  checkDisabled(){
+    if(this.isLogin){
+      if(!this.authFormGroup.get('password')?.invalid &&
+        !this.authFormGroup.get('email')?.invalid){
+        return false;
+      }
+    }else{
+      if(!this.authFormGroup.get('username')?.invalid &&
+        !this.authFormGroup.get('password')?.invalid &&
+        !this.authFormGroup.get('email')?.invalid){
+        return false;
+      }
+    }
+    return true;
+  }
+
+  switchMode(){
+    this.isLogin = !this.isLogin;
   }
 
   emailValidation(){
