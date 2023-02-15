@@ -1,14 +1,9 @@
 
 
 <div class="flex justify-between items-center text-white">
-  <h1 *ngIf="user">{{user.displayName}} profilja</h1>
+  <h1 *ngIf="user">The profile of {{user.displayName}}</h1>
   <a [routerLink]="['/users']"><mat-icon>arrow_back</mat-icon></a>
 </div>
 <div *ngFor="let post of (posts$ | async)">
   <app-post [post]="post"></app-post>
 </div>
-<section *ngIf="posts$ else noPosts">
-
-</section>
-
-<ng-template #noPosts>Content to render when value is null.</ng-template>

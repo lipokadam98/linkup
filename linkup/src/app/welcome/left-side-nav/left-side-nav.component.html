@@ -4,16 +4,23 @@
 
     <img class="side-nav-profile" src="assets/cat.webp" alt="sidenav-profile">
 
-    <h3 class="font-medium">Teszt User</h3>
-    <p>Ez itt a profilnak a részletesebb leírása</p>
+    <h3 class="weight-500 text-center">{{user?.displayName}}</h3>
+    <p class="text-center">This is some example description</p>
 
-    <div class="grid grid-cols-3 gap-3">
-      <div>256 bejegyzés</div>
-      <div>2.5k követő</div>
-      <div>413 követés</div>
+    <div class="grid grid-cols-3 gap-3 text-center">
+      <div>
+        <p class="margin-bottom-0 weight-500">256</p>
+        <p>posts</p>
+      </div>
+      <div>
+        <p class="margin-bottom-0 weight-500">2.5k</p>
+        <p>followers</p>
+      </div>
+      <div>
+        <p class="margin-bottom-0 weight-500">413</p>
+        <p>following</p>
+      </div>
     </div>
-
-
   </div>
 
 </nav>

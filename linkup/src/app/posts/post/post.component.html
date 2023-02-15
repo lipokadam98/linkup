@@ -1,5 +1,5 @@
 <section
-  class="text-cyan-50 container bg-slate-100 bg-opacity-20 shadow-sm p-5 mt-4 rounded-lg"
+  class="text-cyan-50 container bg-slate-100 bg-opacity-20 p-5 mt-4 rounded-lg post-shadow"
 >
   <div class="flex flex-row justify-between items-center">
     <div class="flex gap-1 mb-2">
@@ -21,6 +21,6 @@
     </button>
   </div>
 
-  <p class="break-words text-sm">{{ post?.message }}</p>
+  <p class="break-words text-sm text-justify">{{ post?.message }}</p>
   <img *ngIf="post?.image" [src]="post?.image" alt="cat" class="post-picture">
 </section>

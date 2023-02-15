@@ -93,18 +93,18 @@ export class AuthComponent implements OnInit, OnDestroy {
   emailValidation(){
 
       if (this.authFormGroup.get('email')?.hasError('required')) {
-        return 'E-mail cím megadása kötelező';
+        return 'You must provide an e-mail address';
       }
 
-      return this.authFormGroup.get('email')?.hasError('email') ? 'Nem helyes e-mail formátum' : '';
+      return this.authFormGroup.get('email')?.hasError('email') ? 'E-mail format is not correct' : '';
   }
 
   passwordValidation(){
     if (this.authFormGroup.get('password')?.hasError('required')) {
-      return 'Jelszó megadása kötelező';
+      return 'You must provide a password';
     }
 
-    return this.authFormGroup.get('password')?.hasError('minlength') ? 'A jelszó hossza nem megfelelő' : '';
+    return this.authFormGroup.get('password')?.hasError('minlength') ? 'The password must be at least 6 characters' : '';
   }
 
 }

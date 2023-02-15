@@ -1,13 +1,13 @@
 <app-navbar></app-navbar>
 <main class="flex items-center justify-center">
   <div class="main-content">
-    <div *ngIf="user" class="side-nav">
-      <app-left-side-nav></app-left-side-nav>
+    <div *ngIf="user" class="side-nav max-w-sm w-56 lg:w-72">
+      <app-left-side-nav [user]="user"></app-left-side-nav>
     </div>
-   <main class="max-w-sm p-1 sm:max-w-sm md:max-w-md lg:max-w-xl">
+   <div>
      <router-outlet></router-outlet>
-   </main>
-    <div *ngIf="user" class="side-nav">
+   </div>
+    <div *ngIf="user" class="side-nav max-w-sm w-56 lg:w-72">
       <app-right-side-nav></app-right-side-nav>
     </div>
   </div>

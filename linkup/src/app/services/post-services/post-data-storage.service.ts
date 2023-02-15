@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Observable, switchMap} from 'rxjs';
+import {Observable, switchMap, take} from 'rxjs';
 import {
   collectionChanges,
   collectionData,
@@ -51,7 +51,7 @@ export class PostDataStorageService {
   }
 
   createPost(message: string,image: string | undefined){
-   return this.store.select(selectAuthUser).pipe(switchMap(
+   return this.store.select(selectAuthUser).pipe(take(1),switchMap(
       (user)=> addDoc(this.postsCollection,JSON.parse(JSON.stringify(new Post(message,new Date(),user?.userId,image))))
      )
     )

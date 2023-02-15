@@ -27,7 +27,7 @@ export class AuthEffects{
           map((data) => {
             const expirationDate = new Date(new Date().getTime() + +data.expiresIn * 1000);
             const user = new User(data.email,data.localId,data.displayName,data.idToken,expirationDate);
-            addUser({user: user})
+            this.store.dispatch(addUser({user: user}));
             return storeUser({user: user})
           }),
           catchError((error)=> {
@@ -46,7 +46,6 @@ export class AuthEffects{
             map(data=> {
               const expirationDate = new Date(new Date().getTime() + +data.expiresIn * 1000);
               const user = new User(data.email,data.localId,data.displayName,data.idToken,expirationDate);
-              addUser({user: user})
               return storeUser({user: user})
             }),
             catchError((error)=> {

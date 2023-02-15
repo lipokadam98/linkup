@@ -1,9 +1,13 @@
 <header
   *ngIf="user"
-  class="fixed flex justify-center items-center bg-transparent z-10 bg-opacity-80 border-b-2 border-cyan-50 text-cyan-50 font-medium backdrop-blur-sm top-0 left-0 right-0 h-12 pr-2 pl-2"
+  class="fixed flex justify-center items-center
+   bg-transparent z-10 bg-opacity-80
+   border-b-2 border-cyan-50 text-cyan-50
+   font-medium backdrop-blur-sm top-0 left-0 right-0 h-12 pr-2 pl-2"
 >
-  <div class="flex flex-1 items-center justify-start">
+  <div class="flex flex-1 items-center justify-start gap-3">
     <a routerLink="" class="hover:text-sky-300 text-3xl">LinkUp</a>
+    <input type="text" class="p-1 rounded text-black flex-1 w-0 hidden sm:block max-w-sm" placeholder="Search...">
   </div>
   <div class="flex-1 flex items-center justify-center gap-2">
     <a
@@ -22,9 +26,16 @@
       <mat-icon>groups</mat-icon>
     </a>
   </div>
-  <div class="flex-1 flex justify-end flex-row gap-3">
+  <div class="flex-1 flex items-center justify-end flex-row gap-3">
+    <mat-icon class="cursor-pointer hover:text-sky-300">notifications</mat-icon>
+    <a class="cursor-pointer hover:text-sky-300 flex items-center"
+       routerLink="messages"
+       routerLinkActive="text-sky-400">
+      <mat-icon class="cursor-pointer hover:text-sky-300">chat</mat-icon>
+    </a>
+
     <a class="hover:text-sky-300 cursor-pointer" (click)="logout()">
-      Kijelentkezés
+      Log out
     </a>
   </div>
 </header>

@@ -106,16 +106,16 @@ export class AuthService{
 
     switch(errorRes.error.error.message){
       case 'EMAIL_NOT_FOUND':
-        errorMessage = 'A megadott e-mail cím nem található';
+        errorMessage = 'E-mail not found';
         break;
       case 'INVALID_PASSWORD':
-        errorMessage = 'A megadott jelszó helytelen';
+        errorMessage = 'Incorrect password';
         break;
       case 'USER_DISABLED':
-        errorMessage = 'A felhasználói fiók deaktiválva lett az adminisztrátor által';
+        errorMessage = 'User was disabled';
         break;
       case 'EMAIL_EXISTS':
-          errorMessage = 'Ez az e-mail cím már foglalt'
+          errorMessage = 'This e-mail already exists'
         break;
     }
 

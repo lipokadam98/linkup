@@ -10,7 +10,7 @@ import {
   loadUsersFailure,
   loadUsersSuccess
 } from "./user.actions";
-import {from, map, of, switchMap, withLatestFrom} from "rxjs";
+import {from, map, of, switchMap, take, withLatestFrom} from "rxjs";
 import {UserDataStorageService} from "../../services/user-services/user-data-storage.service";
 import {catchError} from "rxjs/operators";
 import {selectUsers} from "./user.selectors";
@@ -33,7 +33,7 @@ export class UserEffects{
     this.actions$.pipe(
       ofType(loadUsers),
       switchMap(()=>
-        from(this.userDataStorageService.getAllUsers()).pipe(
+        from(this.userDataStorageService.getAllUsers()).pipe(take(1),
           map((users) => loadUsersSuccess({users: users})),
           catchError((error)=> of(loadUsersFailure({error})))
         )
@@ -56,7 +56,7 @@ export class UserEffects{
       ofType(getUserDetailById),
       withLatestFrom(this.store.select(selectUsers)),
       switchMap(([action])=>
-        from(this.userDataStorageService.getUserById(action.id)).pipe(
+        from(this.userDataStorageService.getUserById(action.id)).pipe(take(1),
           map( (user) =>{
             return loadUserDetailById({user: user})
           })

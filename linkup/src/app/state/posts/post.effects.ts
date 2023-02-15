@@ -11,7 +11,7 @@ import {
   loadPostsFailure,
   loadPostsSuccess, loadUserPosts
 } from "./post.actions";
-import {from, map, of, switchMap, withLatestFrom} from "rxjs";
+import {from, map, of, switchMap, take, withLatestFrom} from "rxjs";
 import {catchError} from "rxjs/operators";
 import {Post} from "../../posts/model/post.model";
 import {selectAll, selectDeleteId, selectMessage} from "./post.selectors";
@@ -45,7 +45,7 @@ export class PostsEffects{
     this.actions$.pipe(
       ofType(createPost),
       withLatestFrom(this.store.select(selectMessage)),
-      switchMap(([action])=> from(this.postDataStorageService.createPost(action.message,action.image)).pipe(
+      switchMap(([action])=> from(this.postDataStorageService.createPost(action.message,action.image)).pipe(take(1),
         map(()=> createPostSuccess()),
         catchError((error)=> of(createPostFailure({error: error})))
           )
@@ -57,7 +57,7 @@ export class PostsEffects{
     this.actions$.pipe(
       ofType(deletePost),
       withLatestFrom(this.store.select(selectDeleteId)),
-      switchMap(([action])=> from(this.postDataStorageService.deletePost(action.id)).pipe(
+      switchMap(([action])=> from(this.postDataStorageService.deletePost(action.id)).pipe(take(1),
           map(()=> deletePostSuccess()),
           catchError((error)=> of(deletePostFailure({error: error})))
       )
@@ -70,7 +70,7 @@ export class PostsEffects{
       ofType(getPostsByUserId),
       withLatestFrom(this.store.select(selectAll)),
       switchMap(([action])=>
-        from(this.postDataStorageService.getPostsByUserId(action.userId)).pipe(
+        from(this.postDataStorageService.getPostsByUserId(action.userId)).pipe(take(1),
           map( (posts) =>{
             posts.sort((a: Post, b: Post) => {
               return new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime();

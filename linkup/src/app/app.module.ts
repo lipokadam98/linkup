@@ -29,6 +29,7 @@ import {NgxImageCompressService} from "ngx-image-compress";
 import {LeftSideNavComponent} from "./welcome/left-side-nav/left-side-nav.component";
 import {RightSideNavComponent} from "./welcome/right-side-nav/right-side-nav.component";
 import {MatButtonModule} from "@angular/material/button";
+import { MessagesComponent } from './messages/messages.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import {MatButtonModule} from "@angular/material/button";
     LeftSideNavComponent,
     RightSideNavComponent,
     WelcomeComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    MessagesComponent
   ],
   imports: [
     BrowserModule,
